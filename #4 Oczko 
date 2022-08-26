@@ -1,0 +1,116 @@
+"""Oczko, autor: Al Sweigart, al@inventwithpython.com
+Klasyczna gra karciana. (Ta gra nie uwzględnia
+rozdwojenia kart ani ubezpieczenia).
+Więcej informacji na stronie https://pl.wikipedia.org/wiki/Blackjack.
+Kod pobrany ze strony https://ftp.helion.pl/przyklady/wiksma.zip.
+Etykiety: długi, gra, gra karciana"""
+
+import random, sys 
+
+#Deklaracja stałych:
+HEARTS = chr(9829) #Znak 9829 to '♥'.
+DIAMONDS = chr(9830) #Znak 9830 to '♦'.
+SPADES = chr(9824) #Znak 9824 to '♠'.
+CLUBS = chr(9827) # Znak 9827 to '♣'.
+# (Listę kodów chr znajdziesz na stronie https://inventwithpython.com/charactermap).
+BACKSIDE = 'tył'
+
+
+def main():
+    print('''Oczko, autor: Al Sweigart, al@inventwithpython.com
+
+    Zasady:
+        Spróbuj uzyskać liczbę punktów jak najbardziej zbliżoną do 21, ale nie większą. 
+        Króle, damy i walety mają 10 punktów.
+        Asy mają 1 lub 11 punktów.
+        Karty od 2 do 10 mają odpowiednią do swojego numeru liczbę punktów.
+        Naciśnij H, by wziąć kolejną kartę.
+        Klawisz S zatrzymuje dobieranie kart.
+        Przy swojej pierwszej rozgrywce możesz wcisnąć P, by podwoić swój zakład,
+        ale musisz to zrobić dokładnie jeden raz przed zakończeniem dobierania kart. 
+        W przypadku remisu postawiona kwota jest zwracana graczowi.
+        Krupier kończy dobierać karty przy wartości 17''')
+
+    money = 5000 
+    while True: #Główna pętla gry:
+        # Sprawdź, czy gracz ma jeszcze pieniądze:
+        if money <= 0:
+            print("Jesteś spłukany!")
+            print("Dobrze, ze nie grałeś na prawdziwe pieniądze.")
+            print("Dziękuje za grę!")
+            sys.exit()
+
+        # Gracz podaje wysokość zakładu w tej rundzie:
+        print('Budzet: ', money)
+        bet = getBet(money)
+
+        # Daj krupierowi i graczowi po dwie karty z talii:
+        deck = getDeck()
+        dealerHand = [deck.pop(), deck.pop()]
+        playerHand = [deck.pop(), deck.pop()]
+
+        #Obsługa ruchów gracza:
+        print('Zakład: ', bet)
+        while True: #Wykonuj pętle, dopóki gracz nie przestanie dobierać karty  # lub nie przekroczy 21. 
+            displayHands(playerHand, dealerHand, False)
+            print()
+
+            #Sprawdź czy gracz przekroczył 21:
+            if getHandValue(playerHand) > 21:
+                break
+
+            # Odczytaj ruchy gracza: , S lub P:
+            move = getMove(playerHand, money - bet)
+
+            #Obsługa ruchów gracza: 
+            if move == 'P':
+                # Gracz podwaja zakład, można zwiększyć zakład:
+                additionalBet = getBet(min(bet, (money - bet)))
+                bet += additionalBet
+                print('Zakład zwiększony do kwoty {}.'.format(bet))
+                print('Zakład:', bet)
+
+            if move in ('D', 'P'):
+                #Wciśniecie klawisza D lub P powoduje dobranie karty.
+                newCard = deck.pop()
+                rank, suit = newCard
+                print('Wziąłeś {} {}.'.format(rank, suit))
+                playerHand.append(newCard)
+
+                if getHandValue(playerHand) > 21:
+                    #Gracz przekroczył 21
+                    continue
+            
+            if move in ('S', 'P'):
+                #Wciśnięcie klawisza S lub P kończy kolejkę gracza.
+                break 
+
+        #Obsługa ruchów krupiera: 
+        
+
+
+
+
+
+
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
